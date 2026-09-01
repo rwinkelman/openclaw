@@ -58,12 +58,13 @@ describe("collectSecretsInConfigFindings", () => {
     } satisfies OpenClawConfig;
     expect(collectSecretsInConfigFindings(plaintext)).toHaveLength(1);
 
+    // hooks.token is string-typed in OpenClawConfig, but audit still inspects SecretRef-shaped values.
     const secretRef = {
       hooks: {
         enabled: true,
         token: { source: "file", provider: "default", id: "/run/secrets/hooks-token" },
       },
-    } satisfies OpenClawConfig;
+    } as unknown as OpenClawConfig;
     expect(collectSecretsInConfigFindings(secretRef)).toHaveLength(0);
   });
 });
